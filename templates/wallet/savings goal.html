@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Savings  goal{% endblock %}
+{% block content %}
+    <div class="row my-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Savings Balance</h5>
+                    <h2>AED {{ user.wallet.savings_balance }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3>Add savings goal.</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="name" class="form-control" placeholder="Goal name">
+            </div>
+            <div class="col-md-4">
+                <input type="number" name="amount" class="form-control" placeholder="Amount">
+            </div>
+            <div class="col-md-4">
+                <input type="submit" class="btn btn-success" value="Add">
+            </div>
+        </div>
+    </form>
+    <h3 class="mt-3">
+        Your goals:
+    </h3>
+    <hr>
+    {% if not user.wallet.savings_goals.exists %}
+        <div class="col-12">
+            <div class="alert alert-warning">You didn't set any goal yet.</div>
+        </div>
+    {% else %}
+        {% for item in user.wallet.savings_goals.all %}
+            <div class="row">
+                <div class="col-md-9">
+                    <h4 class="small font-weight-bold">{{ item.name }} (AED {{ item.target_amount }}) <span
+                            class="float-right">{{ item.percentage }}%</span></h4>
+                    <div class="progress mb-4">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ item.percentage }}%"
+                             aria-valuenow="{{ item.percentage }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'wallet:delete_goal' item.id %}" class="btn btn-secondary rounded-circle"
+                       title="Delete"><i class="fa fa-trash"></i></a>
+                    <a href="{% url 'wallet:goal_priority' item.priority 0 %}" class="btn btn-secondary rounded-circle"
+                       {% if forloop.first %}style="pointer-events: none;" {% endif %} title="Priority up"><i
+                            class="fa fa-angle-up"></i></a>
+                    <a href="{% url 'wallet:goal_priority' item.priority 1 %}" class="btn btn-secondary rounded-circle"
+                       {% if forloop.last %}style="pointer-events: none;" {% endif %} title="Priority down"><i
+                            class="fa fa-angle-down"></i></a>
+                    {% if item.is_locked %}
+                        <a href="{% url 'wallet:unlock_goal' item.id %}" class="btn btn-secondary rounded-circle" title="Unlock balance"><i
+                                class="fa fa-unlock"></i></a>
+                    {% else %}
+                        <a href="{% url 'wallet:lock_goal' item.id %}" class="btn btn-secondary rounded-circle" title="Lock balance"><i
+                                class="fa fa-lock"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <script>
+        document.getElementById('goal').classList.add('active')
+    </script>
+{% endblock %}

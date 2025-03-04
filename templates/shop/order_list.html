@@ -1,0 +1,73 @@
+{% extends 'shop/base.html' %}
+{% block body %}
+    <div class="container">
+        <h3>My orders</h3>
+        {% for item in user.order_set.all %}
+            <h5>Date: {{ item.created_at }}</h5>
+            <div class="card mb-4">
+                <div class="card-header py-3">
+                    <h5 class="mb-0">Order - {{ item.orderitem_set.count }} items</h5>
+                </div>
+                <div class="card-body">
+                    {% for product in item.orderitem_set.all %}
+                        <!-- Single item -->
+                        <div class="row">
+                            <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                <!-- Image -->
+                                <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                     data-mdb-ripple-color="light">
+                                    <img src="{{ product.product.image }}" height="200px"
+                                         alt="{{ product.product.name }}"/>
+                                    <a href="#!">
+                                        <div class="mask"
+                                             style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                    </a>
+                                </div>
+                                <!-- Image -->
+                            </div>
+
+                            <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                <!-- Data -->
+                                <p><strong>{{ product.product.name }}</strong></p>
+                                <p>Color: blue</p>
+                                <p>Size: M</p>
+
+                                <!-- Data -->
+                            </div>
+
+                            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0 d-flex align-items-center flex-column justify-content-center">
+                                <!-- Quantity -->
+                                <div class="d-flex mb-4" style="max-width: 300px">
+
+
+                                    <div data-mdb-input-init class="form-outline">
+                                        <input id="form1" min="0" name="quantity" value="{{ product.quantity }}"
+                                               type="number"
+                                               class="form-control text-center" disabled/>
+                                    </div>
+
+                                </div>
+                                <!-- Quantity -->
+
+                                <!-- Price -->
+                                <p class="text-start text-md-center">
+                                    <strong>AED {{ product.total_price }}</strong>
+                                </p>
+                                <!-- Price -->
+                            </div>
+                        </div>
+                        {% if not forloop.last %}
+                            <hr class="my-4"/>
+                        {% endif %}
+                    {% endfor %}
+
+
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+    <script>
+        document.getElementById('order').classList.add('active')
+    </script>
+{% endblock %}

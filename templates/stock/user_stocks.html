@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}My Stock{% endblock %}
+{% block content %}
+    {% if user.investment_set %}
+         <table class="table">
+                <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Current Price</th>
+                    <th>Purchased Price</th>
+                    <th>Holding</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in user.investment_set.all %}
+                    {% if not item.shares == 0 %}
+                    <tr>
+
+                        <td><a href="{% url 'stock:stock_chart' item.stock_symbol %}">{{ item.stock_symbol }}</a></td>
+                        <td>AED {{ item.stock_symbol.current_price }}</td>
+                        <td>AED {{ item.purchase_price }}</td>
+                        <td> {{ item.shares }}</td>
+                        <td>AED {{ item.get_shares_value }}</td>
+                        
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+
+    {% else %}
+        <div class="alert alert-danger text-center">
+            You do not have any stocks yet.
+        </div>
+    {% endif %}
+<script>
+    document.getElementById('user_stocks').classList.add('active')
+    </script>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block body %}
+
+    <div class="container mt-4 bg-white my-4">
+        <nav aria-label="breadcrumb">
+
+            <ol class="breadcrumb">
+                <a href="{% url 'index' %}"><i class="fa fa-house my-1 mx-2"></i></a>
+                <li class="breadcrumb-item"><a href="#">{{ product.category }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-lg-3">
+                <img style="width: 100%;"
+                     src="{% if product.image %} {{ product.image }} {% else %} {% static "gallery/demo.webp" %} {% endif %}"
+                     alt="">
+            </div>
+            <div class="col-lg-6">
+                <h1>{{ product.name }}</h1>
+                <p class="text-capitalize">{{ product.description }}</p>
+                <div class="review">
+                    {#                <img src="{% static 'gallery/vecteezy_5-star-rating-review-star-png-transparent_9663927_155.png' %}"#}
+                    {#                    width="80px" alt="">#}
+                    <span class="text-secondary ">(97)</span>Ratings
+                </div>
+                <hr>
+                <div class="text-primary bold h2">
+                    AED  {{ product.get_price }}
+                </div>
+                <div class="wrap">
+                    <span class="text-secondary text-decoration-line-through ">AED {{ product.price }}</span>
+                    <span class="text-secondary ">-{{ product.discount }}%</span>
+                </div>
+
+                <div class="wrap">
+                    <div class="row">
+                        <div class="col-4 h4">
+                            Quantity
+                        </div>
+                        <div class="col">
+                            <form>
+                                <button class="ml-4 btn-minus rounded" type="button" style="border: 1px solid silver"><i class="fa fa-minus"></i></button>
+
+                                <input type="number" class="rounded" value="1" min="1" max="10" width="10px" style="text-align: center; border: 1px solid silver"
+                                       name="quantity">
+                                <button class="btn-plus rounded" type="button" style="border: 1px solid silver"><i class="fa fa-plus"></i></button>
+                                <input type="hidden" name="product-name" value="{{ product.name }}">
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+                
+                <div class="row my-2">
+                    {% if user.is_authenticated %}
+                    <div class="col">
+
+
+                    </div>
+                    <div class="col">
+                    {% if product.id in cart_item_ids %}
+                        <div class="text-success my-2">Item already in cart</div>
+                        {% else %}
+                        <button class="btn btn-outline-dark btn-add-to-cart">Add to Cart</button>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger">Login required</div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-3 bg-secondary-light">
+                <h5>Delivery</h5>
+                <div class="row">
+                    <div class="col-1">
+                        <i class="fa fa-location-dot"></i>
+                    </div>
+                    <div class="col-8">
+                        46, Al Maktoum Airport Street
+                    </div>
+                    <div class="col-2"><a href="">Change</a></div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-1">
+                        <i class="fa fa-truck"></i>
+                    </div>
+                    <div class="col-7">
+                        Standard Delivery:
+                    </div>
+                    <div class="col-3">AED 50</div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-1">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <div class="col-8">
+                        Delivery by 12th Aug
+                    </div>
+
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-1">
+                        <i class="fa fa-credit-card"></i>
+                    </div>
+                    <div class="col-8">
+                        Cash on Delivery Available
+                    </div>
+
+                </div>
+                <hr>
+
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+
+        $(document).ready(function () {
+            $('.btn-plus').click(function () {
+                var value = parseInt($('input[type="number"]').val());
+                if (value < 10) {
+                    value = value + 1;
+                    $('input[type="number"]').val(value);
+                }
+            })
+            $('.btn-minus').click(function () {
+                var value = parseInt($('input[type="number"]').val());
+                if (value > 1) {
+                    value = value - 1;
+                    $('input[type="number"]').val(value);
+                }
+            })
+            // use ajax to add to cart
+            $('.btn-add-to-cart').click(function (e) {
+                e.preventDefault();
+                var quantity = $('input[name="quantity"]').val();
+                var product_name = $('input[name="product-name"]').val();
+                $.ajax({
+                    url: "{% url 'shop:add_to_cart' %}",
+                    type: 'POST',
+                    data: {
+                        'quantity': quantity,
+                        'product_name': product_name,
+                        'csrfmiddlewaretoken': '{{csrf_token}}',
+                    },
+                    success: function (response) {
+                        $('.cart-count').text(response.cart_count);
+                        location.reload()
+                    }
+                })
+            })
+        })
+
+    </script>
+
+{% endblock %}

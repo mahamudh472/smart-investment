@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: 'SPROUT'
+    buildCommand: "./build.sh"
+    env: python
+    startCommand: "gunicorn your_django_app_name.wsgi:application"

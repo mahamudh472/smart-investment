@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Index - SPROUT Bootstrap Template</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link href="{% static 'landing/img/favicon.png' %}" rel="icon">
+    <link href="{% static 'landing/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'landing/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'landing/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'landing/vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'landing/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    <link href="{% static 'landing/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{% static 'landing/css/main.css' %}" rel="stylesheet">
+
+    <!-- =======================================================
+    * Template Name: SPROUT
+    * Template URL: https://bootstrapmade.com/SPROUT-multipurpose-html-template-for-free/
+    * Updated: Aug 07 2024 with Bootstrap v5.3.3
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
+</head>
+
+<body class="index-page">
+
+<header id="header" class="header fixed-top">
+
+
+    <div class="branding d-flex align-items-center">
+
+        <div class="container position-relative d-flex align-items-center justify-content-between">
+            <a href="{% url 'index' %}" class="logo d-flex align-items-center">
+                <!-- Uncomment the line below if you also wish to use an image logo -->
+                <!-- <img src="assets/img/logo.png" alt=""> -->
+                <h1 class="sitename">SPROUT</h1>
+            </a>
+
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="#hero" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+
+                    <li><a href="{% url 'shop:order_list' %}">Orders</a></li>
+                    <li><a href="{% url 'shop:shop' %}">Shop</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'shop:cart' %}">Cart <span
+                                class="badge bg-secondary rounded-circle">{{ user.cart.cart_count }}</span></a></li>
+                        <li>
+                            <a href="{% url 'main:dashboard' %}">Dashboard</a>
+                        </li>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}">Get Started</a>
+                    {% endif %}
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+        </div>
+
+    </div>
+
+</header>
+
+<main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+        <img src="{% static 'landing/img/hero-bg.jpg' %}" alt="" data-aos="fade-in">
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <div class="row justify-content-start">
+                <div class="col-lg-8">
+                    <h2>Welcome to SPROUT </h2>
+                    <p>Empowering you to turn spare change into meaningful investments. With SPROUT, watch your
+                        financial goals grow through effortless round-ups, personalized investment options, and simple,
+                        secure tools to manage and track your growth. Join us in building a brighter financial future,
+                        one step at a time.</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'shop:shop' %}" class="btn-get-started">Shop now</a>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn-get-started">Get Started</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <span>About Us<br></span>
+            <h2>About Us<br></h2>
+            
+        </div><!-- End Section Title -->
+
+        <div class="container">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="100">
+                    <img src="{% static 'landing/img/about.jpg' %} " class="img-fluid" alt="">
+                </div>
+
+                <div class="col-lg-6 order-2 order-lg-1 content" data-aos="fade-up" data-aos-delay="200">
+                    <h3>Our Mission: Growing Your Future, One Investment at a Time</h3>
+                    <p class="fst-italic">
+                        At SPROUT, we believe in making investing accessible, engaging, and tailored to fit your everyday life. Born from a passion for financial empowerment, SPROUT helps you turn spare change into valuable investments, bringing you closer to your goals with every transaction. Our mission is to create a seamless, secure platform where you can manage investments, track growth, and make informed decisions with confidence.
+                    </p>
+                    <div class="fst-italic">
+Whether you’re a first-time investor or looking to build smarter habits, SPROUT offers tools and guidance to support your journey. Let’s make investing simple, rewarding, and impactful—together.
+                    </p>
+                    
+                    <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section><!-- /About Section -->
+
+    <!-- Cards Section -->
+    <section id="cards" class="cards section">
+
+        <div class="container">
+
+            <div class="row no-gutters">
+
+                <div class="col-lg-4 col-md-6 card" data-aos="fade-up" data-aos-delay="100">
+                    <span>01</span>
+                    <h4>Round-Up Savings</h4>
+                    <p>Automatically save spare change from everyday purchases by rounding up transactions, helping you invest without even thinking about it.</p>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6 card" data-aos="fade-up" data-aos-delay="200">
+                    <span>02</span>
+                    <h4>Flexible Wallet System</h4>
+                    <p>Manage your finances with two wallets: Savings for accumulating funds and Investments for dedicated growth, all under one platform.
+
+</p>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6 card" data-aos="fade-up" data-aos-delay="300">
+                    <span>03</span>
+                    <h4> Investment Options & Tracking</h4>
+                    <p>Explore a curated list of stocks, select options that align with your goals, and easily track your portfolio's performance./p>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6 card" data-aos="fade-up" data-aos-delay="400">
+                    <span>04</span>
+                    <h4>Goal Setting</h4>
+                    <p>Set financial goals, track your progress, and stay motivated as you reach each milestone toward financial independence.</p>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6 card" data-aos="fade-up" data-aos-delay="400">
+                    <span>05</span>
+                    <h4>Real-Time Market Data</h4>
+                    <p>Make informed decisions with up-to-date stock data and insights, keeping you aligned with current market trends.</p>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6 card" data-aos="fade-up" data-aos-delay="600">
+                    <span>06</span>
+                    <h4>User-Friendly Interface</h4>
+                    <p>Enjoy an intuitive design that makes saving and investing easy for users of any experience level.</p>
+                </div><!-- End Card Item -->
+
+            </div>
+
+        </div>
+
+    </section><!-- /Cards Section -->
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <span>Contact</span>
+            <h2>Contact</h2>
+            
+        </div><!-- End Section Title -->
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-6">
+                    <div class="info-item d-flex flex-column justify-content-center align-items-center"
+                         data-aos="fade-up" data-aos-delay="200">
+                        <i class="bi bi-geo-alt"></i>
+                        <h3>Address</h3>
+                        <p>Sharjah, United Arab Emirates</p>
+                    </div>
+                </div><!-- End Info Item -->
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="info-item d-flex flex-column justify-content-center align-items-center"
+                         data-aos="fade-up" data-aos-delay="300">
+                        <i class="bi bi-telephone"></i>
+                        <h3>Call Us</h3>
+                        <p>971 56 303 9101</p>
+                    </div>
+                </div><!-- End Info Item -->
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="info-item d-flex flex-column justify-content-center align-items-center"
+                         data-aos="fade-up" data-aos-delay="400">
+                        <i class="bi bi-envelope"></i>
+                        <h3>Email Us</h3>
+                        <p>21554083@student.uwl.ac.uk</p>
+                    </div>
+                </div><!-- End Info Item -->
+
+            </div>
+
+
+        </div>
+
+    </section><!-- /Contact Section -->
+
+</main>
+
+<footer id="footer" class="footer position-relative dark-background">
+
+
+
+    <div class="container copyright text-center mt-4">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">SPROUT</strong> <span>All Rights Reserved</span></p>
+
+    </div>
+
+</footer>
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Preloader -->
+<div id="preloader"></div>
+
+<!-- Vendor JS Files -->
+<script src="{% static 'landing/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'landing/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'landing/vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'landing/vendor/glightbox/js/glightbox.min.js' %}"></script>
+
+<!-- Main JS File -->
+<script src="{% static 'landing/js/main.js' %}"></script>
+
+</body>
+
+</html>

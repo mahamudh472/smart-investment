@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block title %}Stock view{% endblock %}
+{% block content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <h1>{{ symbol }} Stock Price ({{ period }})</h1>
+    <form action="" method="get" id="form">
+        <select name="period" id="period" class="form-control col-md-2"
+                onchange="document.getElementById('form').submit()">
+            <option value="1y" {% if period == '1y' %}selected{% endif %}>1 Year</option>
+            <option value="6mo" {% if period == '6mo' %}selected{% endif %}>6 Months</option>
+            <option value="3mo" {% if period == '3mo' %}selected{% endif %}>3 Months</option>
+            <option value="1mo" {% if period == '1mo' %}selected{% endif %}>1 Month</option>
+            <option value="5d" {% if period == '5d' %}selected{% endif %}>5 Days</option>
+            <option value="1d" {% if period == '1d' %}selected{% endif %}>1 Day</option>
+        </select>
+    </form>
+
+
+    <div class="col-md-10 m-auto">
+        <canvas id="stockChart"></canvas>
+        <div class="">Current price: AED {{ current_price }}</div>
+        <div class="mb-3">Holding amount: {{ holdings }}</div>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#buyModal">Buy</button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#sellModal">Sell</button>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <h3>Transactions</h3>
+            <table class="table table-hover table-responsive w-100">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Tran. Type</th>
+                    <th>price</th>
+                    <th>Amount</th>
+                    <th>Shares</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tran in transactions %}
+                    <tr>
+
+                        <td><a>{{ tran.purchase_date }}</a></td>
+                        {% if tran.transaction_type == "Buy" %}
+                            <td>
+                                <div class="badge text-bg-success">Buy</div>
+                            </td>
+                        {% else %}
+                            <td >
+                                <div class="badge text-bg-danger">Sell</div></td>
+                        {% endif %}
+                        <td>AED {{ tran.purchase_price }}</td>
+                        <td>AED {{ tran.invested_amount }}</td>
+                        <td> {{ tran.shares }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Buy {{ symbol }} stock</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'stock:buy_stock' %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label for="amount" class="form-check-label">Amount (AED)</label>
+                            <input type="number" id="amount" class="form-control" name="amount"
+                                   max="{{ user.wallet.investment_balance }}">
+                            <p>Max: AED {{ user.wallet.investment_balance }}</p>
+                            <input type="hidden" name="symbol" value="{{ symbol }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Buy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="sellModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Sell {{ symbol }} stock</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'stock:sell_stock' %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label for="amount" class="form-check-label">Amount (Shares)</label>
+                            <input type="number" id="amount" step="0.000001" class="form-control" name="shares" max="{{ holdings }}">
+                            <p>Available shares: {{ holdings }}</p>
+                            <input type="hidden" value="{{ symbol }}" name="symbol">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Sell</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+    <script>
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        const stockChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates|safe }},  // Dates as X-axis labels
+                datasets: [{
+                    label: '{{ symbol }} Closing Prices',
+                    data: {{ prices|safe }},  // Prices as Y-axis values
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.4)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price (AED)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

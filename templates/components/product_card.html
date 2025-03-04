@@ -1,0 +1,63 @@
+<div class="row justify-content-center mb-3">
+    <div class="col-md-12 col-xl-10">
+        <div class="card shadow-0 border rounded-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
+                        <div class="bg-image hover-zoom ripple rounded ripple-surface">
+                            <img src="{{ prod.image }}" style="height: 250px"
+                                 class="w-100"/>
+                            <a href="#!">
+                                <div class="hover-overlay">
+                                    <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-6 mt-5">
+                        <h5>{{ prod.name }}</h5>
+                        <div class="d-flex flex-row">
+                            <div class="text-danger mb-1 me-2">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <span>310</span>
+                        </div>
+                        
+                        <p class="text-truncate mb-4 mb-md-0">
+                            {{ prod.description }}
+                        </p>
+                    </div>
+                    <div class="col-md-6 col-lg-3 col-xl-3 border-sm-start-none border-start">
+                        <div class="d-flex flex-row align-items-center mb-1">
+                            <h4 class="mb-1 me-1">AED {{ prod.get_price }}</h4>
+                            <span class="text-danger"><s>{{ prod.price }}</s></span>
+                        </div>
+                        <h6 class="text-success">Free shipping</h6>
+                        <div class="d-flex flex-column mt-4">
+
+                            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-sm"
+                                    type="button" onclick="window.location.href=`{% url 'shop:product' prod.id %}`">
+                                Details
+                            </button>
+                            {% if user.is_authenticated %}
+                                {% if prod.id in cart_item_ids %}
+                                    <div class="text-success text-center my-2">Item already in cart</div>
+                                {% else %}
+                                    <button data-mdb-button-init data-mdb-ripple-init onclick="location.href=`{% url 'shop:add_to_cart_shop' prod.id %}`"
+                                            class="btn btn-outline-dark btn-sm mt-2" type="button">
+                                        Add to Cart
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <div class="text-danger text-center my-2">Login required</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

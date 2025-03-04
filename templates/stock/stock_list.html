@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Stock list{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <h3>Available Stocks for Investment</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Price</th>
+                    <th>Daily High</th>
+                    <th>Daily Low</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for stock in stock_list %}
+                    <tr>
+
+                        <td><a href="{% url 'stock:stock_chart' stock.symbol %}">{{ stock.symbol }}</a></td>
+                        <td>AED {{ stock.current_price }}</td>
+                        <td>AED {{ stock.daily_high }}</td>
+                        <td>AED {{ stock.daily_low }}</td>
+                        
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+<script>
+    document.getElementById('stock_list').classList.add('active')
+    </script>
+{% endblock %}
